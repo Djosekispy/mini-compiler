@@ -11,6 +11,7 @@ import path from "path";
  * 2. Realizar a Análise Léxica (transformar string em tokens).
  * 3. Realizar a Análise Sintática (transformar tokens em uma AST).
  * 4. Realizar a Análise Semântica e Execução (percorrer a AST e processar a lógica).
+ * Ola Mundo
  */
 
 // Caminho do arquivo de entrada (.nt)
