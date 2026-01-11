@@ -43,6 +43,7 @@ aproximar de linguagens modernas e preparar o compilador para
 - Melhoria no reconhecimento de identificadores (suporte a números e underscores após a primeira letra, ex: `var1`, `minha_variavel`)
 - Implementação parsing de Strings (aspas duplas) com tratamento de erro para strings não terminadas
 - Formatação de mensagens de erro com cores ANSI e detalhes do arquivo, linha e coluna
+- **Relatório de Múltiplos Erros:** O Lexer agora acumula e exibe todos os erros léxicos encontrados de uma vez, em vez de parar no primeiro.
 - Exibição do contexto do erro para facilitar o debug
 - **Validações de Identificadores:**
     - Erro ao iniciar com números (ex: `12nome`).

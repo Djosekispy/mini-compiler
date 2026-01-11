@@ -35,12 +35,13 @@ Abaixo estão listadas as validações de erro do sistema, organizadas por etapa
     *   **Exemplo:** `esperado :, encontrado ;`
 
 *   **Comando Inválido**
-    *   **Descrição:** Uma instrução começou com algo que não é um comando válido (como `VAR` ou `EXIBIR`).
-    *   **Exemplo:** Começar a linha direto com `x = 10` sem declarar.
+    *   **Descrição:** Uma instrução começou com um token inesperado. O erro agora exibe qual token causou o problema.
+    *   **Exemplo:** `Comando inválido: 10`
 
 *   **Tipo de Variável Inválido**
-    *   **Descrição:** Declaração de variável com um tipo desconhecido.
-    *   **Exemplo:** `VAR x = 1 : COISA.`
+    *   **Descrição:** Declaração de variável com um tipo desconhecido ou mal formatado. O erro especifica o tipo inválido encontrado.
+    *   **Exemplo:** `Tipo de variável inválido: COISA`
+    *   **Tipos Válidos:** `INTEIRO`, `REAL`, `NATURAL`, `TEXTO`
 
 ---
 
