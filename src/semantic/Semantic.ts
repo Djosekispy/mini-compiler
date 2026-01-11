@@ -59,6 +59,7 @@ class SemanticAnalyzer {
                 `Erro semântico: valor ${value} não é compatível com tipo TEXTO`
               );
             }
+            break;
           case "LOGICO":
             if (typeof value !== "boolean") {
               throw new Error(
