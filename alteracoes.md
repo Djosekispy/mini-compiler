@@ -27,6 +27,7 @@ aproximar de linguagens modernas e preparar o compilador para
 - NATURAL
 - INTEIRO
 - REAL
+-MENOS
 - Operadores relacionais (>, <, ==, !=, <=, >=)
 
 ---
@@ -37,6 +38,7 @@ aproximar de linguagens modernas e preparar o compilador para
 - Reconhecimento dos novos lexemas definidos no ILexer (incluindo TEXTO)
 - Suporte aos delimitadores: ponto e parenteses
 - Utilização de vírgula para números de ponto flutuante
+- Reconhecimento do lexema Menos(-) para numeros negativos definidos no Ilexter
 - Melhoria no reconhecimento de identificadores (suporte a números e underscores após a primeira letra, ex: `var1`, `minha_variavel`)
 - Implementação parsing de Strings (aspas duplas) com tratamento de erro para strings não terminadas
 - Formatação de mensagens de erro com cores ANSI e detalhes do arquivo, linha e coluna

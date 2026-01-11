@@ -1,12 +1,16 @@
 import ASTNode from "../parser/IParser";
 
+interface Symbol {
+  value: number;
+  type: "INTEIRO" | "REAL" | "NATURAL";
+}
+
 /**
  * O SemanticAnalyzer percorre a AST para validar semântica e executar os comandos.
- * Ele mantém uma tabela de símbolos para armazenar valores de variáveis.
+ * Ele mantém uma tabela de símbolos para armazenar valores e tipos das variáveis.
  */
 class SemanticAnalyzer {
-  // Tabela de símbolos: mapeia nomes de variáveis para seus valores numéricos
-  private simbols: Record<string, number> = {};
+  private simbols: Record<string, Symbol> = {};
 
   /**
    * Executa a lista de comandos representada pela AST.
@@ -18,55 +22,91 @@ class SemanticAnalyzer {
   }
 
   /**
-   * Função recursiva que "visita" cada nó da AST e executa a lógica correspondente.
+   * Função recursiva que visita cada nó da AST e executa a lógica correspondente.
    */
   private visit(node: ASTNode): any {
     switch (node.type) {
-      // Declaração de variável: avalia a expressão e armazena no dicionário
+      // Declaração de variável
       case "VariableDeclaration":
         const value = this.visit(node.value);
-        this.simbols[node.id] = value;
+
+        // Validação de tipo
+        if (node.varType === "INTEIRO" && !Number.isInteger(value)) {
+          
+          throw new Error(
+            `Erro semântico: valor ${value} não é compatível com tipo INTEIRO da variável ${node.id}`
+          );
+        }
+
+        if (
+          node.varType === "NATURAL" &&
+          (!Number.isInteger(value) || value < 0)
+        ) {
+          throw new Error(
+            `Erro semântico: valor ${value} não é compatível com tipo NATURAL da variável ${node.id}`
+          );
+        }
+
+        // REAL aceita qualquer número
+        this.simbols[node.id] = { value, type: node.varType };
         break;
 
-      // Comando print: avalia a expressão e imprime o resultado no console
+      // Comando print
       case "PrintStatement":
         console.log(this.visit(node.value));
         break;
 
-      // Valor literal: retorna o próprio número
+      // Valor literal
       case "NumberLiteral":
         return node.value;
 
-      // Identificador: busca o valor na tabela de símbolos ou lança erro se não declarado
+      // Expressao unária
+      case "UnaryExpression":
+        const val = this.visit(node.argument);
+        switch (node.operator) {
+          case "-":
+            return -val;
+          default:
+            throw new Error(`Operador unário desconhecido: ${node.operator}`);
+        }
+
+      // Identificador
       case "IDENTIFICADOR":
-        if (!(node.name in this.simbols)) {
+        const symbol = this.simbols[node.name];
+        if (!symbol) {
           throw new Error(
             `Erro semântico: variavel ${node.name} não foi declarada`
           );
         }
-        return this.simbols[node.name];
+        return symbol.value;
 
-      // Expressão binária: executa a operação matemática entre os dois lados
+      // Expressão binária
       case "BinaryExpression":
+        const left = this.visit(node.left);
+        const right = this.visit(node.right);
+
+        // Checar divisão por zero
+        if (node.operator === "/" && right === 0) {
+          throw new Error(
+            `Expressão mal definida: ${left} / ${right} . Não é possível dividir por zero`
+          );
+        }
+
         switch (node.operator) {
           case "+":
-            return this.visit(node.left) + this.visit(node.right);
+            return left + right;
           case "-":
-            return this.visit(node.left) - this.visit(node.right);
+            return left - right;
           case "*":
-            return this.visit(node.left) * this.visit(node.right);
+            return left * right;
           case "/":
-            const left = this.visit(node.left);
-            const right = this.visit(node.right);
-            // Validação semântica: divisão por zero
-            if (right === 0) {
-              throw new Error(
-                `Expressão mal definida: ${left} ${node.operator} ${right} . Não é possível divisaoir por zero`
-              );
-            }
             return left / right;
+          default:
+            throw new Error(`Operador desconhecido: ${node.operator}`);
         }
-        break;
+
+      default:
+        throw new Error(`Nó AST desconhecido: ${node.type}`);
     }
   }
 }

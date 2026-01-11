@@ -34,6 +34,18 @@ class Parser {
    */
   private factor(): ASTNode {
     const token = this.currentToken;
+
+    // Caso: número negativo
+    if (token.type === TokenType.MENOS) {
+      this.eat(TokenType.MENOS);
+      const node = this.factor(); // aplica o menos no próximo factor
+      return {
+        type: "UnaryExpression",
+        operator: "-",
+        argument: node,
+      };
+    }
+
     if (token.type === TokenType.INTEIRO || token.type === TokenType.REAL) {
       this.eat(token.type);
       return {
@@ -47,6 +59,7 @@ class Parser {
       this.eat(TokenType.IDENTIFICADOR);
       return { type: "IDENTIFICADOR", name: token.value };
     }
+
     throw new Error("Factor inválido");
   }
 
@@ -135,6 +148,7 @@ class Parser {
         type: "VariableDeclaration",
         id,
         value,
+        varType: varType.type,
       };
     }
 
