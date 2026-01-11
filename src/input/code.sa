@@ -1,2 +1,2 @@
-VARc nome = 3,9 : REAL.
+VAR nome = 3,9 : REAL.
 EXIBIR (nome).

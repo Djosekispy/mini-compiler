@@ -43,6 +43,11 @@ aproximar de linguagens modernas e preparar o compilador para
 - Implementação parsing de Strings (aspas duplas) com tratamento de erro para strings não terminadas
 - Formatação de mensagens de erro com cores ANSI e detalhes do arquivo, linha e coluna
 - Exibição do contexto do erro para facilitar o debug
+- **Validações de Identificadores:**
+    - Erro ao iniciar com números (ex: `12nome`).
+    - Erro ao iniciar com palavras reservadas seguidas de outros caracteres (ex: `VARc`, `REALx`).
+- **Validação de Números:**
+    - Erro caso o número termine com vírgula ou ponto (ex: `12,`).
 
 
 
