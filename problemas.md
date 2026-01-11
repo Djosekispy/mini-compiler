@@ -42,7 +42,14 @@ Atualmente não há problemas conhecidos em aberto. Todos os problemas listados 
 - [ ] **Declaração incompleta**VAR = 10 : INTEIRO;
  ; [ERRO] Identificador esperado após VAR
 
+- [ ] **Uso de palavra reservada como identificador**VAR VAR = 10 : INTEIRO;
+ ; [ERRO] Palavra reservada não pode ser usada como identificador
 
+- [ ] **EXIBIR sem parênteses**EXIBIR 10;
+ ; [ERRO] Esperado '(' após EXIBIR
+
+- [ ] **Tipo incompatível em expressão aritmética** VAR x = "abc" + 10 : TEXTO
+ ; [ERRO] Operador '+' não é válido entre TEXTO e INTEIRO
 
 
 
