@@ -49,6 +49,4 @@ Atualmente não há problemas conhecidos em aberto. Todos os problemas listados 
 - [ ] **Tipo incompatível em expressão aritmética** VAR x = "abc" + 10 : TEXTO
  ; [ERRO] Operador '+' não é válido entre TEXTO e INTEIRO
 
-
-
 ```
