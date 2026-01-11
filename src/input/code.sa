@@ -1,3 +1,2 @@
-VAR x = 10,50 : REAL.
-VAR y = x / 3: INTEIRO.
-EXIBIR (y).
+VAR 32nome = 3,9 : REAL.
+EXIBIR (nome).

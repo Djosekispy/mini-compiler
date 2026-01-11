@@ -164,6 +164,32 @@ class Lexer {
                     this.advance();
                 }
 
+                if (num.endsWith(".")) {
+                    throw new Error(
+                        `\x1b[31m========================================\x1b[0m
+\x1b[31m[ERRO] Número real inválido\x1b[0m
+\x1b[31m========================================\x1b[0m
+\x1b[1mDetalhes:\x1b[0m
+  - \x1b[36mArquivo:\x1b[0m \x1b[33m${this.filename}\x1b[0m
+  - \x1b[36mLinha:\x1b[0m \x1b[33m${this.linha}\x1b[0m
+  - \x1b[36mColuna:\x1b[0m \x1b[33m${this.coluna}\x1b[0m
+  - \x1b[36mContexto:\x1b[0m O número '\x1b[33m${num.replace('.', ',')}\x1b[0m' não pode terminar com vírgula.`
+                    );
+                }
+
+                if (/[a-zA-Z]/.test(this.peek())) {
+                    throw new Error(
+                        `\x1b[31m========================================\x1b[0m
+\x1b[31m[ERRO] Identificador inválido\x1b[0m
+\x1b[31m========================================\x1b[0m
+\x1b[1mDetalhes:\x1b[0m
+  - \x1b[36mArquivo:\x1b[0m \x1b[33m${this.filename}\x1b[0m
+  - \x1b[36mLinha:\x1b[0m \x1b[33m${this.linha}\x1b[0m
+  - \x1b[36mColuna:\x1b[0m \x1b[33m${this.coluna}\x1b[0m
+  - \x1b[36mContexto:\x1b[0m Identificadores não podem começar com números: '\x1b[33m${num}${this.peek()}\x1b[0m...'`
+                    );
+                }
+
                 return {
                     type: isReal ? TokenType.REAL : TokenType.INTEIRO,
                     value: num,
