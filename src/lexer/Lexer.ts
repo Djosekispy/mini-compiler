@@ -137,7 +137,7 @@ class Lexer {
             if (char === "(") {
                 this.advance();
                 return {
-                    type: TokenType.PARENTES_ESQUERDO,
+                    type: TokenType.PARENTESE_ESQUERDO,
                     value: "(",
                     linha: tokenInicioLinha,
                     coluna: tokenInicioColuna,
@@ -146,7 +146,26 @@ class Lexer {
             if (char === ")") {
                 this.advance();
                 return {
-                    type: TokenType.PARENTES_DIREITO,
+                    type: TokenType.PARENTESE_DIREITO,
+                    value: ")",
+                    linha: tokenInicioLinha,
+                    coluna: tokenInicioColuna,
+                };
+            }
+             if (char === "{") {
+                this.advance();
+                return {
+                    type: TokenType.CHAVE_ESQUERDA,
+                    value: ")",
+                    linha: tokenInicioLinha,
+                    coluna: tokenInicioColuna,
+                };
+            }
+
+             if (char === "}") {
+                this.advance();
+                return {
+                    type: TokenType.CHAVE_DIREITA,
                     value: ")",
                     linha: tokenInicioLinha,
                     coluna: tokenInicioColuna,

@@ -33,16 +33,16 @@ enum TokenType {
     SENAO = "SENAO", // Palavra-chave 'SENAO'
 
     // Delimitadores
-    PARENTES_ESQUERDO = "PARENTES_ESQUERDO", // Parênteses esquerdo '('
-    PARENTES_DIREITO = "PARENTES_DIREITO", // Parênteses direito ')'
-    COLCHETE_ESQUERDO = "COLCHETE_ESQUERDO", // Colchete esquerdo '['
-    COLCHETE_DIREITO = "COLCHETE_DIREITO", // Colchete direito ']'
-    CHAVE_ESQUERDO = "CHAVE_ESQUERDO", // Chave esquerda '{'
-    CHAVE_DIREITO = "CHAVE_DIREITO", // Chave direita '}'
+    PARENTESE_ESQUERDO = "PARENTES_ESQUERDO", // Parênteses esquerdo '('
+    PARENTESE_DIREITO = "PARENTES_DIREITO", // Parênteses direito ')'
+    COLCHETE_ESQUERDA = "COLCHETE_ESQUERDO", // Colchete esquerdo '['
+    COLCHETE_DIREITA = "COLCHETE_DIREITO", // Colchete direito ']'
+    CHAVE_ESQUERDA = "CHAVE_ESQUERDO", // Chave esquerda '{'
+    CHAVE_DIREITA = "CHAVE_DIREITO", // Chave direita '}'
     VIRGULA = "VIRGULA", // Vírgula ','
-    DOIS_PONTOS = "DOIS_PONTOS", // Dois semicolons ':'
-    SEMICOLON = "SEMICOLON", // SEMICOLON '.'
-    PONTO_VIRGUAL = "PONTO_VIRGUAL", // SEMICOLON e vírgula ';'
+    DOIS_PONTOS = "DOIS_PONTOS", // Dois pontos ':'
+    SEMICOLON = "SEMICOLON", // ponto final de cada linha '.'
+    PONTO_VIRGUAL = "PONTO_VIRGUAL", // ponto e vírgula ';'
 
     //   Operadores de comparação
     MAIOR_QUE = "MAIOR_QUE", // Maior que '>'
