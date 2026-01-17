@@ -25,22 +25,26 @@ Abaixo estão listadas as validações de erro do sistema, organizadas por etapa
     *   **Descrição:** Uma string foi aberta com aspas `"` mas a linha ou arquivo terminou antes de fechar.
     *   **Exemplo:** `"Texto sem fim`
 
+*   **Limite de Tamanho Excedido**
+    *   **Descrição:** Números (máximo 15 dígitos) ou Strings (máximo 500 caracteres) excederam o limite permitido.
+    *   **Exemplo:** `1234567890123456` ou uma string com mais de 500 letras.
+
+*   **Comentário em Bloco Não Fechado**
+    *   **Descrição:** Um comentário iniciado com `/*` não foi encerrado com `*/`.
+    *   **Exemplo:** `/* Comentário esquecido...`
+
 ---
 
 ## 2. Analisador Sintático (Parser)
 *Erros na estrutura e gramática das frases.*
 
-*   **Erro Sintático**
-    *   **Descrição:** A ordem dos tokens está incorreta (ex: esperava dois pontos, veio um ponto e vírgula). Mensagem formatada com cores exibe tokens esperados e encontrados.
-    *   **Exemplo:** `Esperado :, encontrado ;`
+*   **Erro Sintático (Faltou Ponto Final)**
+    *   **Descrição:** O compilador detectou que uma linha de comando não terminou com o ponto final (`.`).
+    *   **Exemplo:** `VAR x = 10 : INTEIRO` (sem o ponto no final).
 
-*   **Comando Inválido**
-    *   **Descrição:** Uma instrução começou com um token inesperado. O erro exibe qual token causou o problema e lista comandos válidos.
-    *   **Exemplo:** `Token '10' não pode iniciar um comando. Comandos válidos: VAR, EXIBIR`
-
-*   **Tipo de Variável Inválido**
-    *   **Descrição:** Declaração de variável com um tipo desconhecido ou mal formatado. O erro especifica o tipo inválido encontrado e lista todos os tipos válidos.
-    *   **Exemplo:** `Tipo 'COISA' não é reconhecido. Tipos válidos: INTEIRO, REAL, NATURAL, TEXTO, LOGICO`
+*   **Tipo de Variável Não Declarado / Inválido**
+    *   **Descrição:** Declaração de variável sem especificar o tipo após os dois pontos (`:`) ou com um tipo desconhecido.
+    *   **Exemplo:** `VAR x = 10 : .` ou `VAR x = 10 : COISA.`
 
 *   **Erro de Tipo (TEXTO)**
     *   **Descrição:** Tentativa de atribuir valor não-string a variável do tipo TEXTO.
@@ -54,9 +58,9 @@ Abaixo estão listadas as validações de erro do sistema, organizadas por etapa
     *   **Descrição:** Tentativa de atribuir número negativo a variável do tipo NATURAL (verificação sintática).
     *   **Exemplo:** `VAR x = -5 : NATURAL.` → Variável do tipo NATURAL não pode receber número negativo.
 
-*   **Factor Inválido**
-    *   **Descrição:** Token inesperado em uma expressão aritmética ou lógica.
-    *   **Exemplo:** Token inesperado encontrado durante análise de expressão.
+*   **Fator Inválido**
+    *   **Descrição:** Token inesperado em uma expressão aritmética ou lógica. Antigamente chamado de "Factor Inválido".
+    *   **Exemplo:** `VAR x = 10 + * 5 : INTEIRO.`
 
 ---
 
