@@ -9,20 +9,13 @@ EXIBIR(c).
 VAR ola = "Olá, mundo! Foram 50 commits só hoje" : TEXTO.
 EXIBIR (ola).
 
-SE(b == 5){
+a=5.
+SE(a != 8 E c < 10){
     EXIBIR("Verdadeiro 1").
 
     EXIBIR(b).
 }
 
-SENAO SE(b >= 8){
-   
-    VAR nome: TEXTO.
-
-    INSERIR(nome).
-    EXIBIR("FALSO 2 exibindo a variavel a").
-    EXIBIR(nome).
-}
 SENAO{
-    EXIBIR("TERCEIRA OPCAO 3").
+    EXIBIR("TERCEIRA OPCAO  b == 5 e  NAO(b!=2)").
 }

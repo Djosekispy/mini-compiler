@@ -54,6 +54,11 @@ enum TokenType {
   IGUALDADE = "IGUALDADE", // Igualdade '=='
   DIFERENTE_DE = "DIFERENTE", // Diferente '!='
 
+  //  Operadores lógicos
+  E = "E", // Operador lógico E
+  OU = "OU", // Operador lógico OU
+  NAO = "NAO", // Operador lógico NÃO
+
   //   Operador de atribuição
   ATRIBUICAO = "ATRIBUICAO", // Operador de atribuição '='
 }

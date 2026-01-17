@@ -576,6 +576,34 @@ if (isNumber.test(char)) {
           };
         }
 
+        // Operadores lógicos
+        if (word === "E") {
+          return {
+            type: TokenType.E,
+            value: word,
+            linha: tokenInicioLinha,
+            coluna: tokenInicioColuna,
+          };
+        }
+
+        if (word === "OU") {
+          return {
+            type: TokenType.OU,
+            value: word,
+            linha: tokenInicioLinha,
+            coluna: tokenInicioColuna,
+          };
+        }
+
+        if (word === "NAO") {
+          return {
+            type: TokenType.NAO,
+            value: word,
+            linha: tokenInicioLinha,
+            coluna: tokenInicioColuna,
+          };
+        }
+
         // Validação de palavras reservadas "erradas" (ex: VARc, REALx)
         const keywords = [
           "VAR",
@@ -590,6 +618,9 @@ if (isNumber.test(char)) {
           "FALSO",
           "SE",
           "SENAO",
+          "E",
+          "OU",
+          "NAO",
         ];
         for (const kw of keywords) {
           if (word.startsWith(kw) && word !== kw) {
