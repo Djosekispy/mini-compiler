@@ -313,7 +313,7 @@ class Parser {
     //   Análise de expressões entre parênteses
     private parenthesizedExpr(): ASTNode {
         this.eat(TokenType.PARENTESE_ESQUERDO);
-        const node = this.expr();
+        const node = this.logicalExpr();
         this.eat(TokenType.PARENTESE_DIREITO);
         return node;
     }
@@ -343,7 +343,7 @@ class Parser {
         // Se houver '=' para atribuição, processa a expressão
         if (this.currentToken.type === TokenType.ATRIBUICAO) {
             this.eat(TokenType.ATRIBUICAO);
-            value = this.expr();
+            value = this.logicalExpr();
         }
 
         // Consome ':' e verifica o tipo da variável
@@ -391,7 +391,7 @@ class Parser {
         this.eat(TokenType.IDENTIFICADOR);
 
         this.eat(TokenType.ATRIBUICAO); // consome '='
-        const value = this.expr(); // avalia expressão do lado direito
+        const value = this.logicalExpr(); // avalia expressão do lado direito
 
         this.eat(TokenType.PONTO); // termina com ponto final
 
@@ -419,7 +419,7 @@ class Parser {
             );
 
         // Processa a expressão dentro dos parênteses
-        const value = this.expr();
+        const value = this.logicalExpr();
         // Consome ')'
         this.eat(TokenType.PARENTESE_DIREITO);
         // Termina a instrução com o ponto final

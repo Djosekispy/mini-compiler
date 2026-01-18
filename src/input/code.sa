@@ -1,21 +1,24 @@
-VAR a : INTEIRO.
-VAR b = 2 + 3 * 4 : INTEIRO.
-VAR c = 10 / 2 + 3 : INTEIRO.
+VAR x = 10 : INTEIRO.
+VAR y = 20 : INTEIRO.
+VAR z = 30 : INTEIRO.
+VAR b = VERDADEIRO : LOGICO.
 
-EXIBIR(a).
-EXIBIR(b).
-EXIBIR(c).
-
-VAR ola = "Olá, mundo! Foram 50 commits só hoje" : TEXTO.
-EXIBIR (ola).
-
-a=5.
-SE(a != 8 E c < 10){
-    EXIBIR("Verdadeiro 1").
-
-    EXIBIR(b).
+SE (x < y E y < z) {
+    EXIBIR("E funciona").
 }
 
-SENAO{
-    EXIBIR("TERCEIRA OPCAO  b == 5 e  NAO(b!=2)").
+SE (x > y OU y < z) {
+    EXIBIR("OU funciona").
+}
+
+SE (NAO(x > y)) {
+    EXIBIR("NAO funciona").
+}
+
+SE (x + 5 < y E y - 5 > x) {
+    EXIBIR("Aritmetica dentro de logica funciona").
+}
+
+SE (x == 10 E (y == 20 OU z == 0)) {
+    EXIBIR("Precedencia com parenteses funciona").
 }
