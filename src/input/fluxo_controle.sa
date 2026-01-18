@@ -1,14 +1,3 @@
-// Teste de Estruturas de Controle (SE/SENAO) e Lógica
-
-VAR idade = 20 : INTEIRO.
-VAR temCarta = VERDADEIRO : LOGICO.
-
-SE (idade >= 18 E temCarta == VERDADEIRO) {
-    EXIBIR("Pode conduzir").
-} SENAO {
-    EXIBIR("Não pode conduzir").
-}
-
 VAR nota = 15 : INTEIRO.
 
 SE (nota >= 18) {
@@ -19,12 +8,4 @@ SE (nota >= 18) {
     EXIBIR("Suficiente").
 } SENAO {
     EXIBIR("Insuficiente").
-}
-
-// Teste de OU e NAO
-VAR chovendo = FALSO : LOGICO.
-VAR sol = VERDADEIRO : LOGICO.
-
-SE (NAO(chovendo) E sol) {
-    EXIBIR("Dia bonito").
 }

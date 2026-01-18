@@ -37,7 +37,7 @@ function runMenu() {
   console.log(`  \x1b[33m0\x1b[0m. Sair`);
   console.log("\x1b[36m----------------------------------------\x1b[0m");
 
-  const choice = readlineSync.question("Opção: ");
+  const choice = readlineSync.question("Opcao: ");
   const index = parseInt(choice, 10) - 1;
 
   if (choice === "0") {
@@ -51,7 +51,7 @@ function runMenu() {
       executeFile(selectedFile);
     }
   } else {
-    console.log("\x1b[31mOpção inválida!\x1b[0m");
+    console.log("\x1b[31mOpcao invalida!\x1b[0m");
     runMenu();
   }
 }

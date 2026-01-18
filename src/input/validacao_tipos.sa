@@ -1,16 +1,16 @@
-// Teste de Tipos e Validações
+# Teste de Tipos e Validações
 
-// NATURAL não aceita negativos
+# NATURAL não aceita negativos
 VAR n = 10 : NATURAL.
 EXIBIR(n).
 
-// LOGICO
+# LOGICO
 VAR log = FALSO : LOGICO.
 SE (NAO(log)) {
     EXIBIR("log é falso").
 }
 
-// Atribuições posteriores
+# Atribuições posteriores
 VAR x : INTEIRO.
 x = 5.
 x = x + 10.

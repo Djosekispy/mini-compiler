@@ -1,0 +1,19 @@
+# Teste da Nova Sintaxe de Comentários
+
+VAR x = 10 : INTEIRO. # Comentário simples no fim da linha
+
+## 
+Este é um comentário em bloco.
+Ele pode ocupar várias linhas.
+##
+
+EXIBIR("O valor de x é:").
+EXIBIR(x).
+
+VAR y = 20 / 2 : INTEIRO. # Verificando se a divisão ainda funciona
+EXIBIR("O valor de y (20/2) é:").
+EXIBIR(y).
+
+## Comentário em bloco de uma linha ##
+
+EXIBIR("Teste finalizado").

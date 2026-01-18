@@ -1,4 +1,4 @@
-// Teste de Entrada de Dados (INSERIR)
+# Teste de Entrada de Dados (INSERIR)
 
 VAR nome : TEXTO.
 INSERIR("Digite o seu nome:", nome).
