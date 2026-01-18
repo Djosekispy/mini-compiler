@@ -1,0 +1,2 @@
+let idade = 25;
+print idade;
