@@ -27,17 +27,23 @@
             </div>
 
             <div class="editor-wrapper">
-                <pre id="highlighting" aria-hidden="true"><code id="highlighting-content"></code></pre>
-
-                <textarea id="codigo" spellcheck="false" oninput="updateHighlight(this.value)"
-                    onscroll="syncScroll(this)">VAR nome = "Pamdu-Ali" : TEXTO
+                <div id="line-numbers" class="line-numbers"></div>
+                <div class="code-area">
+                    <div id="error-overlay" aria-hidden="true"></div>
+                    <pre id="highlighting" aria-hidden="true"><code id="highlighting-content"></code></pre>
+                    <textarea id="codigo" spellcheck="false" oninput="updateHighlight(this.value)"
+                        onscroll="syncScroll(this)">VAR nome = "Pamdu-Ali" : TEXTO
 EXIBIR(nome)</textarea>
+                </div>
             </div>
 
             <div class="actions">
                 <button id="compilar" class="btn-primary">
                     <span class="icon">▶</span> Executar Código
                 </button>
+            </div>
+            <div class="editor-footer">
+                <span id="cursor-position">Ln 1, Col 1</span>
             </div>
         </section>
 

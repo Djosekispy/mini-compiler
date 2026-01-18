@@ -1,5 +1,5 @@
 // Função de Highlighting (Syntax Highlighting)
-function updateHighlight(text) {
+function updateHighlight(text, keepErrors = false) {
     const resultElement = document.getElementById("highlighting-content");
 
     // 1. Escapar caracteres HTML básicos
@@ -50,13 +50,89 @@ function updateHighlight(text) {
     });
 
     // Une todas as partes e aplica ao HTML
+    // Une todas as partes e aplica ao HTML
     resultElement.innerHTML = parts.map(p => p.text).join('');
+
+    // Atualiza numeração de linhas
+    // Se for edição (user typing), limpamos erros pois o código mudou
+    if (!keepErrors) {
+        currentErrorLines.clear();
+    }
+    updateLineNumbers(text);
+    updateErrorOverlay(text);
+}
+
+let currentErrorLines = new Map(); // Map<Linha, Coluna>
+
+function updateLineNumbers(text) {
+    const lineNumbersEle = document.getElementById("line-numbers");
+    if (!lineNumbersEle) return;
+
+    const lines = text.split("\n").length;
+
+    lineNumbersEle.innerHTML = Array(lines).fill(0).map((_, i) => {
+        const lineNum = i + 1;
+        const isError = currentErrorLines.has(lineNum);
+        const className = isError ? 'line-error' : '';
+        return `<div class="${className}">${lineNum}</div>`;
+    }).join('');
 }
 
 function syncScroll(el) {
     const pre = document.getElementById("highlighting");
+    const lineNumbers = document.getElementById("line-numbers");
+
     pre.scrollTop = el.scrollTop;
     pre.scrollLeft = el.scrollLeft;
+
+    if (lineNumbers) {
+        lineNumbers.scrollTop = el.scrollTop;
+    }
+
+    const overlay = document.getElementById("error-overlay");
+    if (overlay) {
+        overlay.scrollTop = el.scrollTop;
+        overlay.scrollLeft = el.scrollLeft;
+    }
+}
+
+function updateErrorOverlay(text) {
+    const overlay = document.getElementById("error-overlay");
+    if (!overlay) return;
+
+    const lines = text.split("\n").length;
+    overlay.innerHTML = Array(lines).fill(0).map((_, i) => {
+        const lineNum = i + 1;
+        const colNum = currentErrorLines.get(lineNum);
+
+        if (colNum !== undefined) {
+            // Sublinhado vermelho a partir da coluna
+            // Usamos ch units que são compatíveis com fontes monoespaçadas
+            // Sublinhamos 1 caractere ou usamos o til (~)
+            const indent = colNum >= 1 ? colNum - 1 : 0;
+            return `<div class="error-line-bg"><span style="margin-left: ${indent}ch; text-decoration: underline wavy #ef4444; font-weight: bold; color: #ef4444;">^</span></div>`;
+        }
+
+        return `<div>&nbsp;</div>`;
+    }).join('');
+
+    // Sincroniza scroll imediato se necessário
+    const textArea = document.getElementById("codigo");
+    if (textArea) overlay.scrollTop = textArea.scrollTop;
+}
+
+function updateCursorPosition(textarea) {
+    const cursorEl = document.getElementById("cursor-position");
+    if (!cursorEl || !textarea) return;
+
+    const val = textarea.value;
+    const sel = textarea.selectionStart;
+
+    // Calcula linha e coluna
+    const line = val.substring(0, sel).split("\n").length;
+    const col = sel - val.lastIndexOf("\n", sel - 1);
+
+    cursorEl.textContent = `Ln ${line}, Col ${col}`;
 }
 
 // Inicializa Highlighting
@@ -64,6 +140,11 @@ window.onload = () => {
     const textArea = document.getElementById("codigo");
     if (textArea) {
         updateHighlight(textArea.value);
+
+        // Listeners para atualizar posição do cursor
+        ['keyup', 'click', 'input'].forEach(evt => {
+            textArea.addEventListener(evt, () => updateCursorPosition(textArea));
+        });
     }
 
     // Configura o botão de executar
@@ -89,13 +170,32 @@ window.onload = () => {
 
                 // Renderiza ERROS
                 if (resultado.errors && resultado.errors.length > 0) {
+                    currentErrorLines.clear();
+
                     resultado.errors.forEach(err => {
+                        // Limpa códigos ANSI para processamento lógico
+                        const cleanErr = err.replace(/\x1b\[[0-9;]*m/g, "");
+
                         const div = document.createElement("div");
                         div.className = "log-entry log-error";
-                        // Adiciona título e texto processado
+                        // Exibe usando processText que já faz escape de HTML
                         div.innerHTML = `<strong>⛔ ERRO:</strong>\n${processText(err)}`;
                         saidaDiv.appendChild(div);
+
+                        // Tenta extrair número da linha e coluna da string limpa
+                        const matchLine = cleanErr.match(/Linha:\s*(\d+)/i);
+                        const matchCol = cleanErr.match(/Coluna:\s*(\d+)/i);
+
+                        if (matchLine && matchLine[1]) {
+                            const lineNum = parseInt(matchLine[1]);
+                            const colNum = matchCol && matchCol[1] ? parseInt(matchCol[1]) : 1;
+                            currentErrorLines.set(lineNum, colNum);
+                        }
                     });
+
+                    // Força re-renderização
+                    updateLineNumbers(codigo);
+                    updateErrorOverlay(codigo);
                 }
 
                 // Renderiza SAÍDA
@@ -140,7 +240,7 @@ window.onload = () => {
             // Prompt (ex: "Digite seu nome: ")
             const promptSpan = document.createElement("span");
             promptSpan.className = "terminal-prompt";
-            promptSpan.textContent = promptMsg.trim() ? `? ${promptMsg}` : "? ";
+            promptSpan.textContent = promptMsg.trim() ? `${promptMsg}` : "? ";
 
             // Campo de Input
             const inputEl = document.createElement("input");

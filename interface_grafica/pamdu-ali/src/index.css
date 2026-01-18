@@ -114,10 +114,81 @@ body {
     border-radius: 8px;
     border: 1px solid var(--border-color);
     overflow: hidden;
+    display: flex;
+    /* Layout Flex para Colunas */
 }
 
-#codigo,
+.line-numbers {
+    width: 50px;
+    background-color: #1e293b;
+    color: #475569;
+    text-align: right;
+    padding: 15px 5px;
+    font-family: 'Fira Code', monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    border-right: 1px solid var(--border-color);
+    overflow: hidden;
+    /* Scroll escondido, controlado via JS */
+    user-select: none;
+}
+
+/* Editor Footer / Status Bar */
+.editor-footer {
+    padding: 5px 0;
+    margin-top: 5px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-family: 'Fira Code', monospace;
+}
+
+/* Estilo para linha com erro */
+.line-error {
+    background-color: rgba(239, 68, 68, 0.2);
+    /* Vermelho suave */
+    color: #ef4444;
+    /* Vermelho forte */
+    font-weight: bold;
+    border-left: 3px solid #ef4444;
+}
+
+.code-area {
+    position: relative;
+    flex-grow: 1;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Editor Layers */
+#codigo {
+    z-index: 10;
+    background: transparent;
+    color: transparent;
+    caret-color: var(--accent-color);
+    resize: none;
+    outline: none;
+}
+
 #highlighting {
+    z-index: 5;
+    color: #e2e8f0;
+    pointer-events: none;
+}
+
+#error-overlay {
+    z-index: 1;
+    pointer-events: none;
+    background: transparent;
+    color: transparent;
+}
+
+/* Base styles for all layers to ensure alignment */
+#codigo,
+#highlighting,
+#error-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -132,25 +203,16 @@ body {
     tab-size: 4;
     white-space: pre;
     overflow: auto;
+    /* Scroll must be synced via JS */
 }
 
-/* Textarea Invisível (por cima) */
-#codigo {
-    z-index: 1;
-    background: transparent;
-    color: transparent;
-    caret-color: var(--accent-color);
-    /* Cor do cursor de escrita */
-    resize: none;
-    outline: none;
-}
-
-/* Camada de Cor (por baixo) */
-#highlighting {
-    z-index: 0;
-    color: #e2e8f0;
-    pointer-events: none;
-    /* Deixa cliques passarem para o textarea */
+/* Highlight style for error overlay lines */
+.error-line-bg {
+    background-color: rgba(239, 68, 68, 0.15);
+    /* Red background for the line */
+    width: 100%;
+    min-height: 1.6em;
+    /* Match line-height */
 }
 
 /* Cores da Sintaxe */
