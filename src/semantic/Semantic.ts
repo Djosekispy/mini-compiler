@@ -293,6 +293,8 @@ class SemanticAnalyzer {
         switch (node.operator) {
           case "-":
             return -val;
+          case "!":
+            return !val;
           default:
             throw new Error(`Operador unário desconhecido: ${node.operator}`);
         }
@@ -353,6 +355,10 @@ class SemanticAnalyzer {
             return l >= r;
           case "<=":
             return l <= r;
+          case "E":
+            return l && r;
+          case "OU":
+            return l || r;
         }
 
       // Identificador

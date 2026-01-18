@@ -1,0 +1,24 @@
+VAR x = 10 : INTEIRO.
+VAR y = 20 : INTEIRO.
+VAR z = 30 : INTEIRO.
+VAR b = VERDADEIRO : LOGICO.
+
+SE (x < y E y < z) {
+    EXIBIR("E funciona").
+}
+
+SE (x > y OU y < z) {
+    EXIBIR("OU funciona").
+}
+
+SE (NAO(x > y)) {
+    EXIBIR("NAO funciona").
+}
+
+SE (x + 5 < y E y - 5 > x) {
+    EXIBIR("Aritmetica dentro de logica funciona").
+}
+
+SE (x == 10 E (y == 20 OU z == 0)) {
+    EXIBIR("Precedencia com parenteses funciona").
+}
