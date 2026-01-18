@@ -282,7 +282,7 @@ class Parser {
   }
 
   //   Declaração de variáveis
-  private parseVariableDeclaration(): ASTNode {
+  private parseVariableDeclaration(expectDot: boolean = true): ASTNode {
     const varToken = this.currentToken;
     this.eat(TokenType.VAR);
 
@@ -326,7 +326,9 @@ class Parser {
     }
 
     this.eat(varTypeToken.type);
-    this.eat(TokenType.PONTO);
+    if (expectDot) {
+      this.eat(TokenType.PONTO); // consome o ponto final se necessário
+    }
 
     return {
       type: "VariableDeclaration",
@@ -546,7 +548,7 @@ class Parser {
     let init: ASTNode;
     if (this.currentToken.type === TokenType.VAR) {
       // Se declarar uma variável com VAR, consome o ponto final normalmente
-      init = this.parseVariableDeclaration();
+      init = this.parseVariableDeclaration(false);
     } else if (this.currentToken.type === TokenType.IDENTIFICADOR) {
       // Se for só atribuição dentro do FOR, não consome ponto
       init = this.parseAssignment(false);
