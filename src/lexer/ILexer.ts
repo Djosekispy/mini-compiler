@@ -70,6 +70,10 @@ enum TokenType {
 
   //   Operador de atribuição
   ATRIBUICAO = "ATRIBUICAO", // Operador de atribuição '='
+  MAIS_IGUAL = "MAIS_IGUAL", // '+='
+  MENOS_IGUAL = "MENOS_IGUAL", // '-='
+  INCREMENTO = "INCREMENTO", // '++'
+  DECREMENTO = "DECREMENTO", // '--'
 
 
   // Novos operadores matemáticos

@@ -353,6 +353,50 @@ class SemanticAnalyzer {
         break;
       }
 
+      case "UpdateStatement": {
+        const symbol = this.lookupSymbol(node.id, node);
+        if (!symbol) {
+          throw new Error(this.formatError("Variável Não Declarada", `Variável '${node.id}' não foi declarada`, node));
+        }
+
+        if (symbol.type !== "INTEIRO" && symbol.type !== "REAL" && symbol.type !== "NATURAL") {
+          throw new Error(this.formatError("Erro de Tipo", `Operador '${node.operator}' só pode ser usado em tipos numéricos`, node));
+        }
+
+        let oldValue = symbol.value as number;
+        let newValue: number;
+
+        switch (node.operator) {
+          case "++":
+            newValue = oldValue + 1;
+            break;
+          case "--":
+            newValue = oldValue - 1;
+            break;
+          case "+=":
+            newValue = oldValue + (await this.visit(node.value));
+            break;
+          case "-=":
+            newValue = oldValue - (await this.visit(node.value));
+            break;
+          default:
+            throw new Error(`Operador de atualização desconhecido: ${node.operator}`);
+        }
+
+        // Validação básica para NATURAL
+        if (symbol.type === "NATURAL" && newValue < 0) {
+          throw new Error(this.formatError("Erro de Tipo (NATURAL)", "Variável NATURAL não pode ser negativa", node));
+        }
+
+        // Garantir que INTEIRO e NATURAL continuem como inteiros
+        if ((symbol.type === "INTEIRO" || symbol.type === "NATURAL") && !Number.isInteger(newValue)) {
+          throw new Error(this.formatError("Erro de Tipo", `Resultado de ${node.operator} deve ser um número inteiro para o tipo ${symbol.type}`, node));
+        }
+
+        symbol.value = newValue;
+        break;
+      }
+
       // Comando print para saida de dados
       case "PrintStatement": {
         let output = "";

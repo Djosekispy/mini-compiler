@@ -27,6 +27,8 @@ VAR mensagem = "Olá Mundo" : TEXTO.
 O Lexer identifica os símbolos básicos:
 - `<` (`MENOR_QUE`) e `>` (`MAIOR_QUE`): Delimitadores de tags.
 - `/` (`BARRA`): Usado para tags de fechamento `</` ou auto-fechamento `/>`.
+- `++` e `--`: Operadores de incremento e decremento.
+- `+=` e `-=`: Atribuição abreviada.
 - `propriedades`: Uma palavra-chave que indica o início dos atributos do componente.
 
 ## 3. Lógica do Parser (Análise Sintática)

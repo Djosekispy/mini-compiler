@@ -357,20 +357,48 @@ class Parser {
     const varName = idToken.value;
     this.eat(TokenType.IDENTIFICADOR);
 
-    this.eat(TokenType.ATRIBUICAO); // consome '='
-    const value = this.expr();
+    const operatorToken = this.currentToken;
+    const operator = operatorToken.type;
+
+    let node: ASTNode;
+
+    if (operator === TokenType.INCREMENTO || operator === TokenType.DECREMENTO) {
+      this.eat(operator);
+      node = {
+        type: "UpdateStatement",
+        id: varName,
+        operator: operator === TokenType.INCREMENTO ? "++" : "--",
+        linha: idToken.linha,
+        coluna: idToken.coluna,
+      };
+    } else if (operator === TokenType.MAIS_IGUAL || operator === TokenType.MENOS_IGUAL) {
+      this.eat(operator);
+      const value = this.expr();
+      node = {
+        type: "UpdateStatement",
+        id: varName,
+        operator: operator === TokenType.MAIS_IGUAL ? "+=" : "-=",
+        value,
+        linha: idToken.linha,
+        coluna: idToken.coluna,
+      };
+    } else {
+      this.eat(TokenType.ATRIBUICAO);
+      const value = this.expr();
+      node = {
+        type: "Assignment",
+        id: varName,
+        value,
+        linha: idToken.linha,
+        coluna: idToken.coluna,
+      };
+    }
 
     if (expectDot) {
       this.eat(TokenType.PONTO); // só consome ponto se necessário
     }
 
-    return {
-      type: "Assignment",
-      id: varName,
-      value,
-      linha: idToken.linha,
-      coluna: idToken.coluna,
-    };
+    return node;
   }
 
   private parsePrintStatement(): ASTNode {
@@ -826,14 +854,15 @@ class Parser {
       case TokenType.SE:
         return this.seStatement();
       case TokenType.IDENTIFICADOR:
-        // Se o identificador é seguido de '=', é uma atribuição
-        if (this.lexer.peekNextToken().type === TokenType.ATRIBUICAO) {
+        // Se o identificador é seguido de um operador de atribuição ou atualização
+        const next = this.lexer.peekNextToken().type;
+        if ([TokenType.ATRIBUICAO, TokenType.INCREMENTO, TokenType.DECREMENTO, TokenType.MAIS_IGUAL, TokenType.MENOS_IGUAL].includes(next)) {
           return this.parseAssignment();
         }
         throw new Error(
           this.formatError(
             "Comando Inválido",
-            `Esperado '=' após ${this.currentToken.value}`,
+            `Esperado operador de atribuição ou atualização após ${this.currentToken.value}`,
           ),
         );
 

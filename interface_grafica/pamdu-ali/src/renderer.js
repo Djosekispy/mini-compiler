@@ -11,7 +11,7 @@ function updateHighlight(text, keepErrors = false) {
         { type: 'comment', regex: /#.*/g },                // Linha #
         { type: 'string', regex: /"(?:\\.|[^"\\])*"/g },  // Strings " "
         { type: 'number', regex: /\b\d+(\.\d+)?\b/g },    // Números
-        { type: 'keyword', regex: /\b(VAR|EXIBIR|SE|SENAO|PARA|ENQUANTO|RETORNA|FUNCAO|INSERIR|PARAR|CONTINUAR|propriedades)\b/g },
+        { type: 'keyword', regex: /\b(VAR|EXIBIR|SE|SENAO|PARA|ENQUANTO|RETORNA|FUNCAO|INSERIR|PARAR|CONTINUAR|propriedades)\b|\+\+|--|\+=|-=/g },
         { type: 'web', regex: /\b(bloco|texto|botao|imagem|titulo|caixa)\b/g },
         { type: 'prop', regex: /\b(fundo|cor|largura|altura|borda|margem|padding)\b/g },
         { type: 'type', regex: /\b(TEXTO|NUMERO|BOOLEANO|LISTA|INTEIRO|REAL|NATURAL|LOGICO)\b/g }
