@@ -5,12 +5,24 @@ import fs from "fs";
 import path from "path";
 
 
-const filePath = path.join(__dirname, "input", "code.nt");
-const code = fs.readFileSync(filePath, "utf-8");
+const argumentPath = process.argv[2];
+const defaultPath = path.join(__dirname, "input", "code.nt");
 
-const lexer = new Lexer(code);
-const parser = new Parser(lexer);
-const ast = parser.parse();
+const filePath = argumentPath ? path.resolve(argumentPath) : defaultPath;
 
-const semantic = new SemanticAnalyzer();
-semantic.execute(ast);
+try {
+    const code = fs.readFileSync(filePath, "utf-8");
+    console.log(`\n📄 Processando arquivo: ${path.basename(filePath)}`);
+
+    const lexer = new Lexer(code);
+    const parser = new Parser(lexer);
+    const ast = parser.parse();
+
+    const semantic = new SemanticAnalyzer();
+    semantic.execute(ast);
+    
+    console.log("✅ Analise concluída com sucesso!");
+} catch (err: any) {
+    console.error(`\n❌ Erro no Compilador: ${err.message}`);
+    process.exit(1); 
+}
