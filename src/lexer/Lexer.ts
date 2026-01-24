@@ -292,6 +292,24 @@ class Lexer {
           coluna: tokenInicioColuna,
         };
       }
+      if (char === "[") {
+        this.advance();
+        return {
+          type: TokenType.COLCHETE_ESQUERDO,
+          value: "[",
+          linha: tokenInicioLinha,
+          coluna: tokenInicioColuna,
+        };
+      }
+      if (char === "]") {
+        this.advance();
+        return {
+          type: TokenType.COLCHETE_DIREITO,
+          value: "]",
+          linha: tokenInicioLinha,
+          coluna: tokenInicioColuna,
+        };
+      }
       if (char === "{") {
         this.advance();
         return {
@@ -590,6 +608,13 @@ class Lexer {
             linha: tokenInicioLinha,
             coluna: tokenInicioColuna,
           };
+        if (word === "LISTA")
+          return {
+            type: TokenType.LISTA,
+            value: word,
+            linha: tokenInicioLinha,
+            coluna: tokenInicioColuna,
+          };
         if (word === "LOGICO")
           return {
             type: TokenType.LOGICO,
@@ -753,7 +778,7 @@ class Lexer {
           "PARAR",
           "PUBLICO",
           "PRIVADO",
-          "PROTEJIDO"
+          "PROTEGIDO"
         ];
         for (const kw of keywords) {
           if (word.startsWith(kw) && word !== kw) {

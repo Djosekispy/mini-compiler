@@ -24,7 +24,7 @@ enum TokenType {
   NATURAL = "NATURAL", // Tipo de dado natural (não negativo)
   REAL = "REAL", // Tipo de dado real (PONTO flutuante)
   TEXTO = "TEXTO", // Tipo de dado texto (string)
-
+  LISTA = "LISTA", // Tipo de dado lista (array)
   CARACTER = "CARACTER", // Tipo de dado caracter (char)
 
   // lOGICOS
@@ -88,7 +88,7 @@ enum TokenType {
   //POO
   PUBLICO = "PUBLICO",
   PRIVADO = "PRIVADO",
-  PROTEJIDO = "PROTEJIDO",
+  PROTEGIDO = "PROTEGIDO",
 }
 
 

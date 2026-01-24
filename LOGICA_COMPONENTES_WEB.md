@@ -29,13 +29,15 @@ O Lexer identifica os símbolos básicos:
 - `/` (`BARRA`): Usado para tags de fechamento `</` ou auto-fechamento `/>`.
 - `++` e `--`: Operadores de incremento e decremento.
 - `+=` e `-=`: Atribuição abreviada.
+- `[` e `]`: Delimitadores de listas (Vetores).
 - `propriedades`: Uma palavra-chave que indica o início dos atributos do componente.
 
 ## 3. Lógica do Parser (Análise Sintática)
 O Parser foi estendido com novos métodos:
 - `parseTag()`: Identifica o nome da tag, processa o bloco opcional de `propriedades` e percorre recursivamente o conteúdo interno.
-- **Interpolação `{ }`**: Dentro de uma tag, se o Parser encontrar `{`, ele ativa o modo de interpolação, consumindo uma expressão completa e adicionando-a como um nó filho.
-- `parseObjectLiteral()`: Processa o conteúdo dentro de `{ ... }` em `propriedades`.
+- **Interpolação `{ }`**: Dentro de uma tag, se o Parser encontrar `{`, ele ativa o modo de interpolação.
+- `parseListLiteral()`: Processa literais de lista como `[1, 2, "texto"]`.
+- **Acesso por Índice**: O fator do Parser foi atualizado para reconhecer `id[indice]` de forma recursiva.
 
 As tags são convertidas em um novo tipo de nó na AST: `WebTag`.
 
@@ -52,6 +54,7 @@ No `SemanticAnalyzer.ts`, adicionamos a lógica para converter nós `WebTag` em 
     - `fundo` -> `background-color` (com tradução automática de nomes como "vermelho" para "red").
     - `largura`, `altura`, `borda`, `margem`, `padding` -> Mapeados diretamente para estilos CSS.
 - **Interpolação**: Como as propriedades aceitam expressões, você pode usar variáveis do seu código SeteAO diretamente nos componentes web.
+- **Suporte a Vetores**: O analisador agora suporta a declaração de listas (`VAR v = [1, 2] : LISTA.`), acesso a elementos (`v[0]`) e atribuição a índices específicos (`v[0] = 10.`).
 
 ## 5. Interface Gráfica (Electron)
 A interface foi atualizada para incluir um terceiro painel chamado **"Visualização Web"**.

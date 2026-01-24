@@ -274,127 +274,86 @@ class SemanticAnalyzer {
         break;
       }
 
-      // Atribuição de valor a variável
+      // Atribuição de valor a variável ou índice
       case "Assignment": {
-        const symbol = this.lookupSymbol(node.id, node);
-
-        if (!symbol) {
-          throw new Error(
-            this.formatError(
-              "Variável Não Declarada",
-              `Variável '${node.id}' não foi declarada`,
-              node,
-            ),
-          );
-        }
-
+        const target = node.target;
         const newValue = await this.visit(node.value);
 
-        // Validação de tipo
-        switch (symbol.type) {
-          case "INTEIRO":
-            if (!Number.isInteger(newValue))
-              throw new Error(
-                this.formatError(
-                  "Tipo Incompatível",
-                  `Variável '${node.id}' espera INTEIRO`,
-                  node,
-                ),
-              );
-            break;
+        if (target.type === "IDENTIFICADOR" || target.type === "VAR") {
+          const id = target.type === "IDENTIFICADOR" ? target.name : target.id;
+          const symbol = this.lookupSymbol(id, node);
 
-          case "REAL":
-            if (typeof newValue !== "number")
-              throw new Error(
-                this.formatError(
-                  "Tipo Incompatível",
-                  `Variável '${node.id}' espera REAL`,
-                  node,
-                ),
-              );
-            break;
+          if (!symbol) {
+            throw new Error(this.formatError("Variável Não Declarada", `Variável '${id}' não foi declarada`, node));
+          }
 
-          case "NATURAL":
-            if (!Number.isInteger(newValue) || newValue < 0)
-              throw new Error(
-                this.formatError(
-                  "Tipo Incompatível",
-                  `Variável '${node.id}' espera NATURAL`,
-                  node,
-                ),
-              );
-            break;
+          // Validação de tipo
+          this.validateTypeCompatibility(symbol.type, newValue, id, node);
 
-          case "TEXTO":
-            if (typeof newValue !== "string")
-              throw new Error(
-                this.formatError(
-                  "Tipo Incompatível",
-                  `Variável '${node.id}' espera TEXTO`,
-                  node,
-                ),
-              );
-            break;
-
-          case "LOGICO":
-            if (typeof newValue !== "boolean")
-              throw new Error(
-                this.formatError(
-                  "Tipo Incompatível",
-                  `Variável '${node.id}' espera LOGICO`,
-                  node,
-                ),
-              );
-            break;
+          symbol.value = newValue;
+        } else if (target.type === "IndexAccess") {
+          await this.assignToIndex(target, newValue);
+        } else {
+          throw new Error(`Alvo de atribuição inválido: ${target.type}`);
         }
-
-        // Atribuição segura
-        symbol.value = newValue;
         break;
       }
 
       case "UpdateStatement": {
-        const symbol = this.lookupSymbol(node.id, node);
-        if (!symbol) {
-          throw new Error(this.formatError("Variável Não Declarada", `Variável '${node.id}' não foi declarada`, node));
+        const target = node.target;
+
+        let oldValue: number;
+        let symbol: any = null;
+        let indexAccess: any = null;
+
+        if (target.type === "IDENTIFICADOR") {
+          symbol = this.lookupSymbol(target.name, node);
+          if (!symbol) {
+            throw new Error(this.formatError("Variável Não Declarada", `Variável '${target.name}' não foi declarada`, node));
+          }
+          if (symbol.type !== "INTEIRO" && symbol.type !== "REAL" && symbol.type !== "NATURAL") {
+            throw new Error(this.formatError("Erro de Tipo", `Operador '${node.operator}' só pode ser usado em tipos numéricos`, node));
+          }
+          oldValue = symbol.value as number;
+        } else if (target.type === "IndexAccess") {
+          indexAccess = await this.resolveIndexAccess(target);
+          if (typeof indexAccess.value !== "number") {
+            throw new Error(this.formatError("Erro de Tipo", `Operador '${node.operator}' só pode ser usado em valores numéricos`, node));
+          }
+          oldValue = indexAccess.value;
+        } else {
+          throw new Error(`Alvo de atualização inválido: ${target.type}`);
         }
 
-        if (symbol.type !== "INTEIRO" && symbol.type !== "REAL" && symbol.type !== "NATURAL") {
-          throw new Error(this.formatError("Erro de Tipo", `Operador '${node.operator}' só pode ser usado em tipos numéricos`, node));
-        }
-
-        let oldValue = symbol.value as number;
         let newValue: number;
-
         switch (node.operator) {
-          case "++":
-            newValue = oldValue + 1;
-            break;
-          case "--":
-            newValue = oldValue - 1;
-            break;
-          case "+=":
-            newValue = oldValue + (await this.visit(node.value));
-            break;
-          case "-=":
-            newValue = oldValue - (await this.visit(node.value));
-            break;
-          default:
-            throw new Error(`Operador de atualização desconhecido: ${node.operator}`);
+          case "++": newValue = oldValue + 1; break;
+          case "--": newValue = oldValue - 1; break;
+          case "+=": newValue = oldValue + (await this.visit(node.value)); break;
+          case "-=": newValue = oldValue - (await this.visit(node.value)); break;
+          default: throw new Error(`Operador desconhecido: ${node.operator}`);
         }
 
-        // Validação básica para NATURAL
-        if (symbol.type === "NATURAL" && newValue < 0) {
-          throw new Error(this.formatError("Erro de Tipo (NATURAL)", "Variável NATURAL não pode ser negativa", node));
+        if (symbol) {
+          if (symbol.type === "NATURAL" && newValue < 0) throw new Error(this.formatError("Erro de Tipo (NATURAL)", "Não pode ser negativo", node));
+          symbol.value = newValue;
+        } else {
+          indexAccess.object[indexAccess.index] = newValue;
         }
-
-        // Garantir que INTEIRO e NATURAL continuem como inteiros
-        if ((symbol.type === "INTEIRO" || symbol.type === "NATURAL") && !Number.isInteger(newValue)) {
-          throw new Error(this.formatError("Erro de Tipo", `Resultado de ${node.operator} deve ser um número inteiro para o tipo ${symbol.type}`, node));
-        }
-
-        symbol.value = newValue;
         break;
+      }
+
+      case "ListLiteral": {
+        const elements = [];
+        for (const element of node.elements) {
+          elements.push(await this.visit(element));
+        }
+        return elements;
+      }
+
+      case "IndexAccess": {
+        const resolved = await this.resolveIndexAccess(node);
+        return resolved.value;
       }
 
       // Comando print para saida de dados
@@ -820,7 +779,14 @@ class SemanticAnalyzer {
         const left = await this.visit(node.left);
         const right = await this.visit(node.right);
 
-        // Validação de tipos: ambos devem ser números
+        // Suporte para concatenação de strings com o operador '+'
+        if (node.operator === "+") {
+          if (typeof left === "string" || typeof right === "string") {
+            return String(left) + String(right);
+          }
+        }
+
+        // Validação de tipos: ambos devem ser números para outras operações aritméticas
         if (typeof left !== "number" || typeof right !== "number") {
           const type1 = this.getUserFriendlyType(left);
           const type2 = this.getUserFriendlyType(right);
@@ -929,11 +895,59 @@ class SemanticAnalyzer {
   }
 
   private getUserFriendlyType(value: any): string {
+    if (Array.isArray(value)) return "LISTA";
     if (typeof value === "number") return "NUMERO";
     if (typeof value === "string") return "TEXTO";
     if (typeof value === "boolean") return "LOGICO";
     if (value === null) return "NULO";
     return typeof value;
+  }
+
+  private validateTypeCompatibility(type: string, value: any, id: string, node: ASTNode) {
+    switch (type) {
+      case "INTEIRO":
+        if (!Number.isInteger(value)) throw new Error(this.formatError("Tipo Incompatível", `Variável '${id}' espera INTEIRO`, node));
+        break;
+      case "REAL":
+        if (typeof value !== "number") throw new Error(this.formatError("Tipo Incompatível", `Variável '${id}' espera REAL`, node));
+        break;
+      case "NATURAL":
+        if (!Number.isInteger(value) || value < 0) throw new Error(this.formatError("Tipo Incompatível", `Variável '${id}' espera NATURAL`, node));
+        break;
+      case "TEXTO":
+        if (typeof value !== "string") throw new Error(this.formatError("Tipo Incompatível", `Variável '${id}' espera TEXTO`, node));
+        break;
+      case "LOGICO":
+        if (typeof value !== "boolean") throw new Error(this.formatError("Tipo Incompatível", `Variável '${id}' espera LOGICO`, node));
+        break;
+      case "LISTA":
+        if (!Array.isArray(value)) throw new Error(this.formatError("Tipo Incompatível", `Variável '${id}' espera LISTA`, node));
+        break;
+    }
+  }
+
+  private async resolveIndexAccess(node: ASTNode): Promise<{ object: any, index: number, value: any }> {
+    const object = await this.visit(node.object);
+    const index = await this.visit(node.index);
+
+    if (!Array.isArray(object)) {
+      throw new Error(this.formatError("Erro de Tipo", "Tentativa de acessar índice em algo que não é uma LISTA", node));
+    }
+
+    if (!Number.isInteger(index)) {
+      throw new Error(this.formatError("Erro de Índice", "Índice deve ser um número INTEIRO", node));
+    }
+
+    if (index < 0 || index >= object.length) {
+      throw new Error(this.formatError("Erro de Índice", `Índice ${index} fora dos limites da lista (tamanho ${object.length})`, node));
+    }
+
+    return { object, index, value: object[index] };
+  }
+
+  private async assignToIndex(node: ASTNode, value: any) {
+    const resolved = await this.resolveIndexAccess(node);
+    resolved.object[resolved.index] = value;
   }
 }
 
