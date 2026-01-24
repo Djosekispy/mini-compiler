@@ -830,7 +830,8 @@ class SemanticAnalyzer {
     const props = node.properties ? await this.visit(node.properties) : {};
 
     let style = "";
-    if (props.cor) style += `background-color: ${this.cssColor(props.cor)}; `;
+    if (props.fundo) style += `background-color: ${this.cssColor(props.fundo)}; `;
+    if (props.cor) style += `color: ${this.cssColor(props.cor)}; `;
     if (props.largura) style += `width: ${props.largura}; `;
     if (props.altura) style += `height: ${props.altura}; `;
     if (props.borda) style += `border: ${props.borda}; `;
@@ -839,8 +840,7 @@ class SemanticAnalyzer {
 
     if (node.tagName === "bloco") {
       style += "display: block; ";
-      if (!props.largura) style += "width: 100px; ";
-      if (!props.altura) style += "height: 100px; ";
+      if (!props.largura) style += "width: 100%; ";
     }
 
     let htmlProps = "";
@@ -878,6 +878,8 @@ class SemanticAnalyzer {
       preto: "black",
       branco: "white",
       cinza: "gray",
+      rosa: "pink",
+      laranja: "orange",
     };
     return colors[color] || color;
   }

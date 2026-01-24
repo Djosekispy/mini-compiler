@@ -14,7 +14,7 @@
     <header class="main-header">
         <div class="logo-area">
             <h1>Pamdu-Ali</h1>
-            <span class="badge">v1.0.0</span>
+            <span class="badge">v2.0.0</span>
         </div>
         <p>Compilador da linguagem <code>SeteAO.sa</code></p>
     </header>
@@ -108,7 +108,23 @@ EXIBIR(nome).</textarea>
         </section>
 
         <section class="panel web-panel">
-            <div class="panel-header">Visualização Web</div>
+            <div class="panel-header">
+                <div class="toolbar-left">
+                    <span>Visualização Web</span>
+                </div>
+                <div class="toolbar-right">
+                    <button id="exportar-web" class="btn-icon" title="Exportar para HTML Puro">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
             <div id="web-preview" class="web-preview">
                 <!-- HTML gerado será injetado aqui -->
             </div>

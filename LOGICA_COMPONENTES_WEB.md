@@ -7,11 +7,19 @@ A sintaxe foi inspirada no JSX (React), mas adaptada para o Português e integra
 
 Exemplo:
 ```sa
-VAR minhaCor = "vermelho" : TEXTO.
+VAR corFundo = "vermelho" : TEXTO.
 VAR mensagem = "Olá Mundo" : TEXTO.
 
-<bloco propriedades={cor: minhaCor, largura: "200px"}>
+<bloco propriedades={
+    fundo: corFundo,
+    largura: "400px",
+    altura: "200px",
+    borda: "5px solid preto",
+    padding: "20px"
+}>
+    <titulo propriedades={cor: "branco"}>"Sucesso!"</titulo>
     <texto propriedades={cor: "branco"}>{mensagem}</texto>
+    <botao> "Clique em mim" </botao>
 </bloco>
 ```
 
@@ -38,7 +46,8 @@ No `SemanticAnalyzer.ts`, adicionamos a lógica para converter nós `WebTag` em 
     - `imagem` -> `img`.
     - `titulo` -> `h1`.
 - **Mapeamento de Propriedades**:
-    - `cor` -> `background-color` (com tradução automática de nomes como "vermelho" para "red").
+    - `cor` -> `color`.
+    - `fundo` -> `background-color` (com tradução automática de nomes como "vermelho" para "red").
     - `largura`, `altura`, `borda`, `margem`, `padding` -> Mapeados diretamente para estilos CSS.
 - **Interpolação**: Como as propriedades aceitam expressões, você pode usar variáveis do seu código SeteAO diretamente nos componentes web.
 

@@ -11,8 +11,10 @@ function updateHighlight(text, keepErrors = false) {
         { type: 'comment', regex: /#.*/g },                // Linha #
         { type: 'string', regex: /"(?:\\.|[^"\\])*"/g },  // Strings " "
         { type: 'number', regex: /\b\d+(\.\d+)?\b/g },    // Números
-        { type: 'keyword', regex: /\b(VAR|EXIBIR|SE|SENAO|PARA|ENQUANTO|RETORNA|FUNCAO|INSERIR)\b/g },
-        { type: 'type', regex: /\b(TEXTO|NUMERO|BOOLEANO|LISTA)\b/g }
+        { type: 'keyword', regex: /\b(VAR|EXIBIR|SE|SENAO|PARA|ENQUANTO|RETORNA|FUNCAO|INSERIR|PARAR|CONTINUAR|propriedades)\b/g },
+        { type: 'web', regex: /\b(bloco|texto|botao|imagem|titulo|caixa)\b/g },
+        { type: 'prop', regex: /\b(fundo|cor|largura|altura|borda|margem|padding)\b/g },
+        { type: 'type', regex: /\b(TEXTO|NUMERO|BOOLEANO|LISTA|INTEIRO|REAL|NATURAL|LOGICO)\b/g }
     ];
 
     // Array para guardar as partes processadas
@@ -335,6 +337,25 @@ window.onload = () => {
 
     setupPanelToggle(toggleConsole, terminalPanel, "Mostrar Console", "Ocultar Console");
     setupPanelToggle(toggleWeb, webPanel, "Mostrar Visualização Web", "Ocultar Visualização Web");
+
+    // --- Lógica de Exportação ---
+    const btnExportar = document.getElementById("exportar-web");
+    if (btnExportar) {
+        btnExportar.addEventListener("click", async () => {
+            const webPreview = document.getElementById("web-preview");
+            if (webPreview && window.api && window.api.exportWebsite) {
+                const html = webPreview.innerHTML;
+                if (!html || html.includes("<!-- Sem saída web -->")) {
+                    alert("Não há nada para exportar! Execute o código primeiro.");
+                    return;
+                }
+                const result = await window.api.exportWebsite(html);
+                if (result) {
+                    alert(`Website exportado com sucesso para:\n${result}`);
+                }
+            }
+        });
+    }
 
 
     // --- Lógica de Input no Console (Terminal-like) ---

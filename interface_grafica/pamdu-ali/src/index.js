@@ -125,3 +125,40 @@ ipcMain.handle('dialog:saveFile', async (event, { content, filePath }) => {
     return null;
   }
 });
+
+ipcMain.handle('dialog:exportWebsite', async (event, htmlContent) => {
+  const { canceled, filePath } = await dialog.showSaveDialog({
+    title: 'Exportar Website',
+    defaultPath: 'site_exportado.html',
+    filters: [
+      { name: 'HTML Files', extensions: ['html'] },
+      { name: 'All Files', extensions: ['*'] }
+    ]
+  });
+
+  if (canceled) return null;
+
+  const fullHtml = `<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Exportado - SeteAO</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+    ${htmlContent}
+</body>
+</html>`;
+
+  try {
+    await fs.writeFile(filePath, fullHtml, 'utf-8');
+    return filePath;
+  } catch (e) {
+    console.error("Erro ao exportar website:", e);
+    return null;
+  }
+});
