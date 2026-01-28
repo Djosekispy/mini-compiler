@@ -42,10 +42,10 @@ class Scope {
  * Ele mantém uma tabela de símbolos para armazenar valores e tipos das variáveis.
  */
 
-class BreakSignal {}
-class ContinueSignal {}
+class BreakSignal { }
+class ContinueSignal { }
 class ReturnSignal {
-  constructor(public value: any) {}
+  constructor(public value: any) { }
 }
 class errorSemantic extends Error {
   constructor(
@@ -207,7 +207,8 @@ class SemanticAnalyzer {
       }
     } catch (er) {
       if (er instanceof errorSemantic) {
-        console.error(this.formatError(er.typeError, er.details, er.node));
+        const formattedError = this.formatError(er.typeError, er.details, er.node);
+        throw new Error(formattedError);
       } else {
         throw er;
       }
@@ -475,34 +476,39 @@ class SemanticAnalyzer {
         let iterations = 0;
         const MAX_ITERATIONS = 10000;
 
-        if (node.type === "ForStatement") await this.visit(node.init);
+        this.enterScope();
+        try {
+          if (node.type === "ForStatement") await this.visit(node.init);
 
-        do {
-          try {
-            await this.executeBlock(node.body);
-          } catch (signal) {
-            if (signal instanceof BreakSignal) break;
-            if (signal instanceof ContinueSignal) {
-              if (node.type === "ForStatement")
-                await this.visit(node.increment);
-              continue;
+          do {
+            try {
+              await this.executeBlock(node.body);
+            } catch (signal) {
+              if (signal instanceof BreakSignal) break;
+              if (signal instanceof ContinueSignal) {
+                if (node.type === "ForStatement")
+                  await this.visit(node.increment);
+                continue;
+              }
+              throw signal;
             }
-            throw signal;
-          }
 
-          if (node.type === "ForStatement") await this.visit(node.increment);
+            if (node.type === "ForStatement") await this.visit(node.increment);
 
-          if (
-            node.type === "WhileStatement" ||
-            node.type === "DoWhileStatement"
-          ) {
-            if (!(await this.visit(node.condition))) break;
-          }
+            if (
+              node.type === "WhileStatement" ||
+              node.type === "DoWhileStatement"
+            ) {
+              if (!(await this.visit(node.condition))) break;
+            }
 
-          iterations++;
-          if (iterations > MAX_ITERATIONS)
-            throw new Error(`Loop ${node.type} excedeu 10000 iterações.`);
-        } while (node.type !== "ForStatement");
+            iterations++;
+            if (iterations > MAX_ITERATIONS)
+              throw new Error(`Loop ${node.type} excedeu 10000 iterações.`);
+          } while (node.type !== "ForStatement");
+        } finally {
+          this.outScope();
+        }
         break;
       }
 

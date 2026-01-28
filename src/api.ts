@@ -56,6 +56,16 @@ export async function executeCode(
         const parser = new Parser(lexer);
         const ast = parser.parse();
 
+        // Coletar erros do Parser
+        if (parser.errors.length > 0) {
+            errors.push(...parser.errors);
+        }
+
+        // Se houver erros em qualquer fase (Lexer ou Parser), não executa
+        if (errors.length > 0) {
+            return { output, errors };
+        }
+
         // 3. Semântica e Execução
         const semantic = new SemanticAnalyzer("gui-input.sa", logCapture, inputCallback);
         await semantic.execute(ast);

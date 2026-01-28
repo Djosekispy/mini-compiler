@@ -1,9 +1,9 @@
 # Teste de Operações Aritméticas e Precedência
 
 VAR a = 10 + 5 * 2 : INTEIRO.
-EXIBIR("Expectativa: 20)
-EXIBIR(a)
+EXIBIR("Expectativa: 20).
+EXIBIR(a).
 
-VAR d = 10,5 + 2,5 : REAL.
-EXIBIR("Expectativa: 13.0").
+VAR d = 10.5 + 2,5 : REAL.
+EXIBIR("Expectativa: 13.0")
 EXIBIR(d).

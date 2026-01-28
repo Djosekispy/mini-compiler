@@ -12,6 +12,8 @@ interface SwitchNode extends ASTNode {
 class Parser {
   private lexer: Lexer;
   private currentToken: Token;
+  private previousToken: Token; // Rastreia o token anterior para erros de "faltou algo"
+  public errors: string[] = [];
   private functionTable: {
     [key: string]: {
       returnType: TokenType;
@@ -22,6 +24,7 @@ class Parser {
   constructor(lexer: Lexer) {
     this.lexer = lexer;
     this.currentToken = this.lexer.getNextToken();
+    this.previousToken = this.currentToken;
   }
 
   /* ==================== UTILITÁRIOS ==================== */
@@ -69,12 +72,19 @@ class Parser {
 
   private eat(type: TokenType) {
     if (this.currentToken.type === type) {
+      this.previousToken = this.currentToken;
       this.currentToken = this.lexer.getNextToken();
     } else {
+      let tokenParaErro = this.currentToken;
       let details = `Esperado \x1b[33m${this.translateTokenName(type)}\x1b[0m, encontrado \x1b[33m${this.translateTokenName(this.currentToken.type)}\x1b[0m`;
-      if (type === TokenType.PONTO)
+
+      if (type === TokenType.PONTO) {
         details = "Faltou o ponto final (.) ao terminar a linha.";
-      throw new Error(this.formatError("Erro Sintático", details));
+        // Se faltou o ponto, o erro provavelmente é na linha do token anterior
+        tokenParaErro = this.previousToken;
+      }
+
+      throw new Error(this.formatError("Erro Sintático", details, tokenParaErro));
     }
   }
 
@@ -789,10 +799,10 @@ class Parser {
   ): ASTNode {
     const idToken = targetNode
       ? {
-          linha: targetNode.linha,
-          coluna: targetNode.coluna,
-          value: (targetNode as any).id || (targetNode as any).name,
-        }
+        linha: targetNode.linha,
+        coluna: targetNode.coluna,
+        value: (targetNode as any).id || (targetNode as any).name,
+      }
       : this.currentToken;
 
     let target: ASTNode;
@@ -1409,11 +1419,43 @@ class Parser {
   }
 
   /* ==================== PARSER PRINCIPAL ==================== */
+  private synchronize() {
+    this.currentToken = this.lexer.getNextToken();
+
+    while (this.currentToken.type !== TokenType.EOF) {
+      if (this.currentToken.type === TokenType.PONTO) {
+        this.currentToken = this.lexer.getNextToken();
+        return;
+      }
+
+      switch (this.currentToken.type) {
+        case TokenType.VAR:
+        case TokenType.EXIBIR:
+        case TokenType.SE:
+        case TokenType.PARA:
+        case TokenType.ENQUANTO:
+        case TokenType.FACA:
+        case TokenType.FUNCAO:
+        case TokenType.RETORNAR:
+        case TokenType.INSERIR:
+        case TokenType.ESCOLHA:
+          return;
+      }
+
+      this.currentToken = this.lexer.getNextToken();
+    }
+  }
 
   public parse(): ASTNode[] {
     const statements: ASTNode[] = [];
-    while (this.currentToken.type !== TokenType.EOF)
-      statements.push(this.statement());
+    while (this.currentToken.type !== TokenType.EOF) {
+      try {
+        statements.push(this.statement());
+      } catch (e: any) {
+        this.errors.push(e.message);
+        this.synchronize();
+      }
+    }
     return statements;
   }
 }
