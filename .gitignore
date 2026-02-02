@@ -1,3 +1,6 @@
 node_modules
 dist
 mini-compiler.exe
+.npm-cache
+.tmp
+.tools
