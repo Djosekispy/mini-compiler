@@ -151,17 +151,19 @@ async function executeFile(filename: string) {
     // 5. Geração de Código Intermediário (TAC)
     // -------------------------------------------------------------------------
     const generator = new TacGenerator();
-   // const tacOriginal = generator.generate(ast);
+    const tacOriginal = generator.generate(ast);
+
 
     // -------------------------------------------------------------------------
     // 6. Otimização do TAC
     // -------------------------------------------------------------------------
     const optimizer = new TacOptimizer();
-   // const tacOptimized = optimizer.optimize(tacOriginal);
+    const tacOptimized = optimizer.optimize(tacOriginal);
 
     // (Opcional para debug)
-    // console.log("TAC Original:", tacOriginal);
-    // console.log("TAC Otimizado:", tacOptimized);
+   
+   console.log("TAC Original:", tacOriginal);
+   console.log("TAC Otimizado:", tacOptimized);
 
     // -------------------------------------------------------------------------
     // 7. Análise Semântica e Execução
@@ -177,6 +179,7 @@ async function executeFile(filename: string) {
     console.error("\x1b[31mErro durante a execução:\x1b[0m");
     console.error(error.message);
   }
+  
 }
 
 
